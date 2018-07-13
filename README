@@ -1,0 +1,38 @@
+
+# prepare
+mkdir pages
+mkdir text
+
+# url: http://mrxwlb.com/2018%E5%B9%B47%E6%9C%8811%E6%97%A5%E6%96%B0%E9%97%BB%E8%81%94%E6%92%AD%E6%96%87%E5%AD%97%E7%89%88/
+# download from mrxwlb, year 2017, i.e. 365 days before 2017-12-31
+
+python download.py 365 20171231
+
+
+# Not found = 13520 bytes
+find ./pages/ -type f -size 13520c | xargs rm
+
+# make txt only
+find ./pages/ -type f | xargs -n 1 bash html2txt.sh
+
+
+# install jieba
+sudo pip install jieba -i https://pypi.douban.com/simple
+sudo pip install jieba -i https://mirrors.aliyun.com/pypi/simple
+
+# stop words
+https://github.com/goto456/stopwords
+
+wget https://raw.githubusercontent.com/goto456/stopwords/master/%E5%93%88%E5%B7%A5%E5%A4%A7%E5%81%9C%E7%94%A8%E8%AF%8D%E8%A1%A8.txt -O cstopwords.dic
+
+curl  http://www.cnblogs.com/ibook360/archive/2011/11/23/2260397.html |sed -n -e '/<pre/,/<\/pre/p' | sed -e 's/<[^>]*>//g' > cstopword.2 
+
+# execute jieba
+
+mkdir jieba
+python segment.py
+find jieba |wc -l
+
+# check result
+cat jieba/* |sort | uniq -c | sort -n -r |head
+
